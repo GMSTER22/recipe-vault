@@ -1,5 +1,5 @@
 Adrea Ferreira
-Gael Nongno
+Gael Nongnogo
 Alex Nielsen
 Johnny Sanabria
 Linden Jensen
