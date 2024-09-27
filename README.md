@@ -7,4 +7,4 @@ Johnny Sanabria
 Linden Jensen
 Eli LeBlanc
 Anthon Brown
-and Aaron Webster
+Aaron Webster
