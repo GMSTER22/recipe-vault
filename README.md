@@ -1,4 +1,4 @@
-Adrea Ferreira
+Andrea Ferreira
 Gael Nongnogo
 Alex Nielsen
 Johnny Sanabria
