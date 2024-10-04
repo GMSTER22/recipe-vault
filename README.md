@@ -1,6 +1,5 @@
 # Recipe Vault Development Team
 
-Andrea Ferreira <br>
 Gael Nongnogo <br>
 Alex Nielsen <br>
 Johnny Sanabria <br>
