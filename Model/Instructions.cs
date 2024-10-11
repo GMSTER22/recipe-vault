@@ -11,9 +11,9 @@ namespace RecipeVault
 
         public int Id { get; set; }
 
-        public int order { get; set;}
+        public int Order { get; set;}
 
-        public string details {get; set;}                
+        public string Details {get; set;}                
                 
     }
 }

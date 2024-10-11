@@ -11,12 +11,12 @@ namespace RecipeVault
 
         public int Id { get; set; }
 
-        public Ingredient ingredient { get; set;}
+        public Ingredient Ingredient { get; set;}
 
 
-        public RecipeUnit unit {get; set;} 
+        public RecipeUnit Unit {get; set;} 
 
-        public string amount {get; set;}        
+        public string Amount {get; set;}        
                 
     }
 }

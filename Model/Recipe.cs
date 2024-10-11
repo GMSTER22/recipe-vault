@@ -15,15 +15,15 @@ namespace RecipeVault
 
         public string Description { get; set;}
 
-        public RecipeCategory category {get; set;}
+        public RecipeCategory Category {get; set;}
 
-        public Boolean isPublic {get; set;}
+        public Boolean IsPublic {get; set;}
 
-        public List<RecipeIngredients> ingredients { get; set; } 
+        public List<RecipeIngredients> Ingredients { get; set; } 
 
-        public List<Instructions> instructions { get; set; } 
+        public List<Instructions> Instructions { get; set; } 
 
-        public DateTime create_time { get; set;}
+        public DateTime CreateTime { get; set;}
 
         public User createdBy {get; }
 

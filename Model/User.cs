@@ -11,11 +11,11 @@ namespace RecipeVault
 
         public int Id { get; set; }
 
-        public string userName { get; set;}
+        public string UserName { get; set;}
 
-        public string email { get; set;}
+        public string Email { get; set;}
 
-        public DateTime create_time { get; set;}
+        public DateTime CreateTime { get; set;}
         
                 
     }
