@@ -5,6 +5,7 @@ using RecipeVault.Components;
 using RecipeVault.Components.Account;
 using RecipeVault.Data;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
