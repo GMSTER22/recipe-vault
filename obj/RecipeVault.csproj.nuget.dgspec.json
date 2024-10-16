@@ -1,32 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\JohnnyMishka\\Desktop\\cse325_dotnet\\Recipe Vault\\RecipeVault.csproj": {}
+    "C:\\Users\\12404\\Desktop\\3. Fall - 2024\\cse-325-.net-software-development\\recipe-vault\\RecipeVault.csproj": {}
   },
   "projects": {
-    "C:\\Users\\JohnnyMishka\\Desktop\\cse325_dotnet\\Recipe Vault\\RecipeVault.csproj": {
+    "C:\\Users\\12404\\Desktop\\3. Fall - 2024\\cse-325-.net-software-development\\recipe-vault\\RecipeVault.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\JohnnyMishka\\Desktop\\cse325_dotnet\\Recipe Vault\\RecipeVault.csproj",
+        "projectUniqueName": "C:\\Users\\12404\\Desktop\\3. Fall - 2024\\cse-325-.net-software-development\\recipe-vault\\RecipeVault.csproj",
         "projectName": "RecipeVault",
-        "projectPath": "C:\\Users\\JohnnyMishka\\Desktop\\cse325_dotnet\\Recipe Vault\\RecipeVault.csproj",
-        "packagesPath": "C:\\Users\\JohnnyMishka\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\JohnnyMishka\\Desktop\\cse325_dotnet\\Recipe Vault\\obj\\",
+        "projectPath": "C:\\Users\\12404\\Desktop\\3. Fall - 2024\\cse-325-.net-software-development\\recipe-vault\\RecipeVault.csproj",
+        "packagesPath": "C:\\Users\\12404\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\12404\\Desktop\\3. Fall - 2024\\cse-325-.net-software-development\\recipe-vault\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\JohnnyMishka\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\ServiceFabricSDK.config"
+          "C:\\Users\\12404\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -40,6 +33,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -82,7 +80,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.108/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
