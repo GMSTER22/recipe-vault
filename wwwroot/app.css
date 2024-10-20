@@ -9,6 +9,8 @@
  --grey-silver: #CCCCCC;
  --grey-light: #D9D9D9;
  --grey-dark: #777777;
+ --agbalumo: "Agbalumo", system-ui;
+ --roboto: "Roboto", system-ui;
 }
 
 html, body {
