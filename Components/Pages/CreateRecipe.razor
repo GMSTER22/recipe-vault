@@ -1,0 +1,69 @@
+@page "/create-recipe"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IHttpClientFactory ClientFactory
+@inject HttpClient Http
+@using RecipeVault.Models
+@using System.Net.Http.Json
+
+<h3>Create Recipe</h3>
+
+<EditForm Model="NewRecipe" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="name" class="form-label">Recipe Name</label>
+        <InputText id="name" class="form-control" @bind-Value="NewRecipe.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <InputTextArea id="description" class="form-control" @bind-Value="NewRecipe.Description" />
+    </div>
+
+    <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <InputSelect id="category" class="form-select" @bind-Value="NewRecipe.CategoryId">
+            @foreach (var category in Categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="form-check mb-3">
+        <InputCheckbox id="isPublic" class="form-check-input" @bind-Value="NewRecipe.IsPublic" />
+        <label class="form-check-label" for="isPublic">Is Public?</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@code {
+    private Recipe NewRecipe { get; set; } = new Recipe();
+    private List<Category> Categories { get; set; } = new List<Category>();
+
+    protected override async Task OnInitializedAsync()
+    {        
+        var client = ClientFactory.CreateClient("RecipeVaultAPI");
+        //Categories = await client.GetFromJsonAsync<List<Category>>("/api/categories");
+
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        // Submit the recipe to the API
+        var response = await Http.PostAsJsonAsync("/api/recipes", NewRecipe);
+        if (response.IsSuccessStatusCode)
+        {
+            // Redirect to the recipe list or detail page after successful creation
+            Navigation.NavigateTo("/recipes");
+        }
+        else
+        {
+            // Handle errors (e.g., show a message to the user)
+            Console.WriteLine("Error creating recipe");
+        }
+    }
+}

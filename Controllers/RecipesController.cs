@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using System.Numerics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,26 +7,30 @@ using RecipeVault.Models;
 
 namespace RecipeVault.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class RecipesController : Controller
     {
-        private readonly RecipeContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public RecipesController(RecipeContext context)
+        public RecipesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Recipes/Details/5
-        public async Task<IActionResult> Details(BigInteger? id)
+        // GET: Recipes/5
+        [HttpGet]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Get([FromQuery] BigInteger recipeId)
         {
-            if (id == null)
+            if (recipeId == null)
             {
                 return NotFound();
             }
 
-            var recipe = await _context.Recipes
-                .FirstOrDefaultAsync(r => r.Id == id);
-            if (recipe == null)
+            var recipe = await _context.Recipe
+                .FirstOrDefaultAsync(r => r.Id == recipeId);
+            if(recipe == null || !RecipeOwnedByUserOrPublic(recipeId))
             {
                 return NotFound();
             }
@@ -33,23 +38,25 @@ namespace RecipeVault.Controllers
             return View(recipe);
         }
 
-         // POST: Recipes/Create
+         // POST: Recipes
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,user_id,category_category_id,is_public")] Recipes recipe)
+        public async Task<ActionResult<Recipe>> Create([FromBody] Recipe recipe)
         {
-            if (ModelState.IsValid)
+            if (User.Identity.Name == null || !ModelState.IsValid)
             {
-                _context.Add(recipe);
-                await _context.SaveChangesAsync();
+                return BadRequest();
             }
-            return View(recipe);
+            recipe.UserId = User.Identity.Name;
+            var createdRecipe = _context.Add(recipe);
+            await _context.SaveChangesAsync();
+            return createdRecipe.Entity;
         }
 
-        // POST: Recipes/Edit/5
-        [HttpPost]
+        // PUT: Recipes/5
+        [HttpPut("{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,user_id,category_category_id,is_public")] Recipes recipe)
+        public async  Task<ActionResult<Recipe>> Edit([FromRoute]BigInteger id, [FromBody] Recipe recipe)
         {
             if (id != recipe.Id)
             {
@@ -60,12 +67,13 @@ namespace RecipeVault.Controllers
             {
                 try
                 {
-                    _context.Update(recipe);
+                    var updatedRecipe = _context.Update(recipe);
                     await _context.SaveChangesAsync();
+                    return updatedRecipe.Entity;
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RecipeExists(recipe.Id))
+                    if (!RecipeOwnedByUser(recipe.Id))
                     {
                         return NotFound();
                     }
@@ -75,25 +83,33 @@ namespace RecipeVault.Controllers
                     }
                 }
             }
-            return View(recipe);
+            return BadRequest();
         }
 
         // GET: Recipes/Delete/5
-        public async Task<IActionResult> Delete(BigInteger? Id)
+        [HttpDelete("{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete([FromRoute]BigInteger Id)
         {
-            var recipe = await _context.Recipes.FindAsync(Id);
+            var recipe = await _context.Recipe.FindAsync(Id);
             if (recipe != null)
             {
-                _context.Recipes.Remove(recipe);
+                _context.Recipe.Remove(recipe);
+                await _context.SaveChangesAsync();
+                return Ok();
             }
+            return NotFound();
 
-            await _context.SaveChangesAsync();
-            return Ok();
         }
 
-        private bool RecipeExists(BigInteger id)
+        private bool RecipeOwnedByUser(BigInteger id)
         {
-            return _context.Recipes.Any(r => r.Id == id);
+            return _context.Recipe.Any(r => r.Id == id && r.UserId == User.Identity.Name);
+        }
+
+        private bool RecipeOwnedByUserOrPublic(BigInteger id)
+        {
+            return _context.Recipe.Any(r => r.Id == id && (r.UserId == User.Identity.Name || r.IsPublic));
         }
     }
 }
