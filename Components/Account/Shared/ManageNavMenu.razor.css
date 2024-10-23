@@ -1,0 +1,22 @@
+:root {
+  --orange: #FF6500;
+  --blue: #1E3E62;
+  --navy: #0B192C;
+  --black: #000;
+  --white: #fff;
+  --grey-mercury: #EBEBEB;
+  --grey-smoke: #F2F2F2;
+  --grey-silver: #CCCCCC;
+  --grey-light: #D9D9D9;
+  --grey-dark: #777777;
+  --agbalumo: "Agbalumo", system-ui;
+  --roboto: "Roboto", system-ui;
+}
+
+
+
+.nav-pills .nav-link.active{
+  background-color: var(--orange);
+  color: black;
+  font-size: larger;
+}
