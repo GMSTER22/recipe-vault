@@ -1,0 +1,43 @@
+@page "/RecipeView"
+
+<PageTitle>{recipe_name}</PageTitle>
+
+<div>
+    <h1>{recipe_name}</h1>
+
+    <div class=main>
+
+        <p id=added>Added by: {user_name}</p>
+
+        <div id=category> 
+            <h2 class=section>Category</h2>
+            <p>{category}</p>
+        </div>
+        <div id=Ingredients> 
+            <h2 class=section>Ingredients</h2>
+            <!--Generate list of ingredients here-->
+            <ul>
+                <li>{item_1}</li>
+                <li>{item_2}</li>
+                <li>{item_3</li>
+                <li>...</li>
+            </ul>
+        </div>
+        <div id=Instructions>
+            <h2 class=section>Instructions</h2>
+            <!--Generate list of instructions here-->
+            <ol>
+                <li>{direction_1}</li>
+                <li>{direction_2}</li>
+                <li>{direction_3</li>
+                <li>...</li>
+            </ol>
+        </div>
+    </div>
+    <div id=editComponents>
+        <!--Edit and delete components here-->
+    </div>
+</div>
+
+
+
