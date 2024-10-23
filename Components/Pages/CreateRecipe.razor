@@ -1,8 +1,6 @@
 @page "/create-recipe"
-@inject HttpClient Http
-@inject NavigationManager Navigation
-@inject IHttpClientFactory ClientFactory
-@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
 @using RecipeVault.Models
 @using System.Net.Http.Json
 
@@ -46,19 +44,19 @@
 
     protected override async Task OnInitializedAsync()
     {        
-        var client = ClientFactory.CreateClient("RecipeVaultAPI");
-        //Categories = await client.GetFromJsonAsync<List<Category>>("/api/categories");
+          Categories = await HttpClient.GetFromJsonAsync<List<Category>>(NavigationManager.BaseUri + "api/categories");
+        
 
     }
 
     private async Task HandleValidSubmit()
     {
         // Submit the recipe to the API
-        var response = await Http.PostAsJsonAsync("/api/recipes", NewRecipe);
+        var response = await HttpClient.PostAsJsonAsync("/api/recipes", NewRecipe);
         if (response.IsSuccessStatusCode)
         {
             // Redirect to the recipe list or detail page after successful creation
-            Navigation.NavigateTo("/recipes");
+            NavigationManager.NavigateTo("/recipes");
         }
         else
         {
