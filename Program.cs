@@ -37,18 +37,6 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 
 var app = builder.Build();
 
-// Enable Swagger in development mode
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "RecipeVault API V1");
-    });
-    app.UseDeveloperExceptionPage();
-    app.UseMigrationsEndPoint();
-}
-
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
