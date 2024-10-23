@@ -68,4 +68,18 @@ input.form-control-sm {
   border-radius:5px;
 }
 
+.nav-pills .nav-link.active {
+  background-color: var(--orange);
+ 
+}
+
+.nav-link {
+  color:var(--orange);
+  font-family: var(--roboto);
+}
+
+.nav-link:hover {
+  color: black;
+}
+
 
