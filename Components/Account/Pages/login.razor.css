@@ -56,7 +56,6 @@ button {
     font-family: var(--roboto);
     border-radius: 5px;
     border-color: var(--grey-dark);
-    
 }
 
 .form-floating > label {
