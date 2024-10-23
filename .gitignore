@@ -3,12 +3,16 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+appsettings.json
+
 # User-specific files
 *.rsuser
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
+
+obj/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -454,3 +458,4 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 
 *.db*
+Recipe Vault.sln

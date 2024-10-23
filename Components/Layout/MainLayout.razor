@@ -1,19 +1,28 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
+@* <div class="page"> *@
+<div>
+    @* <div class="sidebar">
         <NavMenu />
-    </div>
+    </div> *@
+
+    <header class="header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <NavMenu />
+        </div>
+    </header>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
+        @Body
+
     </main>
+
+    <footer class="text-center">
+        <div class="container">
+            &copy; 2024 Recipe Vault
+        </div>
+    </footer>
 </div>
 
 <div id="blazor-error-ui">
