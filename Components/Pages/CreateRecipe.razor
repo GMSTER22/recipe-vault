@@ -12,63 +12,64 @@
 
 <h3>Create Recipe</h3>
 
-<EditForm Model="@NewRecipe" method="post" OnValidSubmit="HandleValidSubmit" FormName="test-form">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+@if(NewRecipe != null)
+{
+    <EditForm Model="NewRecipe" method="post" OnValidSubmit="HandleValidSubmit" FormName="test-form">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-    <div class="mb-3">
-        <label for="Name" class="form-label">Recipe Name</label>
-        <InputText id="Name" class="form-control" @bind-Value="@NewRecipe.Name" />
-    </div>
+        <div class="mb-3">
+            <label for="Name" class="form-label">Recipe Name</label>
+            <InputText id="Name" class="form-control" @bind-Value="NewRecipe.Name" />
+        </div>
 
-    <div class="mb-3">
-        <label for="Description" class="form-label">Description</label>
-        <InputTextArea id="Description" class="form-control" @bind-Value="@NewRecipe.Description" />
-    </div>
+        <div class="mb-3">
+            <label for="Description" class="form-label">Description</label>
+            <InputTextArea id="Description" class="form-control" @bind-Value="NewRecipe.Description" />
+        </div>
 
-    <div class="mb-3">
-        <label for="category" class="form-label">Category</label>
-        <InputSelect id="category" class="form-select" @bind-Value="@NewRecipe.CategoryId">
-            @foreach (var category in Categories)
-            {
-                <option value="@category.Id">@category.Name</option>
-            }
-        </InputSelect>
-    </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <InputSelect id="category" class="form-select" @bind-Value="NewRecipe.CategoryId">
+                @foreach (var category in Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+        </div>
 
-    <div class="form-check mb-3">
-        <InputCheckbox id="isPublic" class="form-check-input" @bind-Value="@NewRecipe.IsPublic" />
-        <label class="form-check-label" for="isPublic">Is Public?</label>
-    </div>
+        <div class="form-check mb-3">
+            <InputCheckbox id="isPublic" class="form-check-input" @bind-Value="NewRecipe.IsPublic" />
+            <label class="form-check-label" for="isPublic">Is Public?</label>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
-</EditForm>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+}
 
 @code {
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromForm]
-    private Recipe NewRecipe { get; set; } = new();
+    private Recipe NewRecipe { get; set; }
 
-
-    [SupplyParameterFromQuery]
-    private string? ReturnUrl { get; set; }
    
 
     private List<Category> Categories { get; set; } = new List<Category>();
 
 
 
-    @* protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {        
-        NewRecipe.IsPublic = true;
+        var user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        Console.WriteLine("userId: " + user.Id);
+        NewRecipe ??= new Recipe();
+        NewRecipe.UserId = user.Id;
+
         using var context = dbContext.CreateDbContext();
         Categories = await context.Category.ToListAsync();
-
-        var user = await UserAccessor.GetRequiredUserAsync(HttpContext);
-        NewRecipe.UserId = user.Id;
-    } *@
+    }
 
     private async Task HandleValidSubmit()
     {
