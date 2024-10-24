@@ -12,5 +12,5 @@ public class Unit
     [Required, MaxLength(255)]
     public string Name { get; set; }
 
-    public ICollection<IngredientHasRecipe> IngredientHasRecipes { get; set; }
+    public ICollection<IngredientHasRecipe> IngredientHasRecipes { get;  }
 }

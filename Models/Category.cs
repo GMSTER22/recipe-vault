@@ -12,5 +12,5 @@ public class Category
     [Required, MaxLength(255)]
     public string Name { get; set; }
 
-    public ICollection<Recipe> Recipes { get; set; }
+    public ICollection<Recipe> Recipes { get;  }
 }

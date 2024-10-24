@@ -26,6 +26,6 @@ public class Recipe
 
     public bool IsPublic { get; set; }
 
-    public ICollection<IngredientHasRecipe> IngredientHasRecipes { get; set; }
-    public ICollection<Instruction> Instructions { get; set; }
+    public ICollection<IngredientHasRecipe> IngredientHasRecipes { get; }
+    public ICollection<Instruction> Instructions { get;  }
 }
