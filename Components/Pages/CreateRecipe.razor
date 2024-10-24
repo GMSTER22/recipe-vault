@@ -1,5 +1,5 @@
  @page "/create-recipe"
-@*@inject NavigationManager NavigationManager
+@inject NavigationManager NavigationManager
 @inject HttpClient HttpClient
 @inject IDbContextFactory<ApplicationDbContext> dbContext
 @inject RecipeVault.Components.Account.IdentityUserAccessor UserAccessor
@@ -12,23 +12,23 @@
 
 <h3>Create Recipe</h3>
 
-<EditForm Model="NewRecipe" OnValidSubmit="HandleValidSubmit" FormName="test-form">
+<EditForm Model="@NewRecipe" method="post" OnValidSubmit="HandleValidSubmit" FormName="test-form">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="mb-3">
         <label for="Name" class="form-label">Recipe Name</label>
-        <InputText id="Name" class="form-control" @bind-Value="Name" />
+        <InputText id="Name" class="form-control" @bind-Value="@NewRecipe.Name" />
     </div>
 
     <div class="mb-3">
         <label for="Description" class="form-label">Description</label>
-        <InputTextArea id="Description" class="form-control" @bind-Value="(NewRecipe.Description)" />
+        <InputTextArea id="Description" class="form-control" @bind-Value="@NewRecipe.Description" />
     </div>
 
     <div class="mb-3">
         <label for="category" class="form-label">Category</label>
-        <InputSelect id="category" class="form-select" @bind-Value="NewRecipe!.CategoryId">
+        <InputSelect id="category" class="form-select" @bind-Value="@NewRecipe.CategoryId">
             @foreach (var category in Categories)
             {
                 <option value="@category.Id">@category.Name</option>
@@ -37,7 +37,7 @@
     </div>
 
     <div class="form-check mb-3">
-        <InputCheckbox id="isPublic" class="form-check-input" @bind-Value="NewRecipe!.IsPublic" />
+        <InputCheckbox id="isPublic" class="form-check-input" @bind-Value="@NewRecipe.IsPublic" />
         <label class="form-check-label" for="isPublic">Is Public?</label>
     </div>
 
@@ -45,15 +45,22 @@
 </EditForm>
 
 @code {
+    [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
-    private Recipe NewRecipe { get; set; } = new Recipe();
+
+    [SupplyParameterFromForm]
+    private Recipe NewRecipe { get; set; } = new();
+
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
    
+
     private List<Category> Categories { get; set; } = new List<Category>();
 
-    private string Name = "";
 
 
-    protected override async Task OnInitializedAsync()
+    @* protected override async Task OnInitializedAsync()
     {        
         NewRecipe.IsPublic = true;
         using var context = dbContext.CreateDbContext();
@@ -61,65 +68,24 @@
 
         var user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         NewRecipe.UserId = user.Id;
-    }
+    } *@
 
     private async Task HandleValidSubmit()
     {
 
         System.Console.WriteLine("HandleValidSubmit");
         System.Console.WriteLine(NewRecipe.Name);
-        System.Console.WriteLine(Name);
         System.Console.WriteLine(NewRecipe.Description);
         // Submit the recipe to the API
       
+        // navigate to home
 
+        NavigationManager.NavigateTo("/");
 
-        using var context = dbContext.CreateDbContext();
+        @* using var context = dbContext.CreateDbContext();
         Category c = new Category();
         c.Name = "Test";
         var createdRecipe = context.Add(c);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(); *@
     }
-} *@
-
-
-@page "/create-recipe"
-
-<EditForm FormName="Hello" EditContext="editContext" OnSubmit="handleForm">
-    <InputText @bind-Value="Name" />
-    <InputText @bind-Value="Title" />
-    <button type="submit">Submit</button>
-</EditForm>
-
-@if (submitted)
-{
-    <p>Hello @person.Name from the @person.Title form!</p>
-}
-
-@code {
-    private EditContext? editContext;
-    bool submitted = false;
-        public string Name { get; set; }
-        public string Title { get; set; }
-
-
-    public class Person {
-        public string Name { get; set; }
-        public string Title { get; set; }
-    }
-    [SupplyParameterFromForm]
-    private Person? person { get; set; }
-
-    //on initialization
-    protected override async Task OnInitializedAsync(){
-        person = new Person();
-        editContext = new(person);
-    }
-
-   private  void handleForm() {
-        submitted = true;
-        System.Console.WriteLine("Submittsed!");
-        System.Console.WriteLine("Name:" + person.Name);
-        System.Console.WriteLine("Title:" + person.Title);
-    }
-}
+} 
