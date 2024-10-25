@@ -1,4 +1,4 @@
-@page "/RecipeCreate"
+@page "/RecipeEdit/{id:int}"
 @rendermode InteractiveServer
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.EntityFrameworkCore;
@@ -11,8 +11,10 @@
 @using RecipeVault.Components.Account
 @using RecipeVault.Data;
 @using RecipeVault.Models;
-<h3>Add Recipe</h3>
+<h3>Edit Recipe</h3>
 
+@if(recipe != null)
+{
 <EditForm Model="@recipe" OnValidSubmit="SaveCustomer">
     <DataAnnotationsValidator />
 
@@ -66,14 +68,15 @@
         </div> 
     }
     <button type="button" class="btn btn-primary" @onclick="AddIngredients">Add Ingredients</button>
-
-
-
+    <br />
+    <button type="button" class="btn btn-secondary" @onclick="cancel">Cancel</button>
     <button type="button" class="btn btn-success" @onclick="save" >Save</button>
 </EditForm>
+}
 
 @code {
-    private Recipe recipe = new Recipe { Ingredients = new List<Ingredient>() };
+    [Parameter]
+    public int Id { get; set; }    private Recipe recipe {get; set;}
     private List<Category> Categories { get; set; } = new List<Category>();
 
 
@@ -81,6 +84,12 @@
     {        
         using var context = dbContext.CreateDbContext();
         Categories = await context.Category.ToListAsync();
+        Categories = await context.Category.ToListAsync();
+        recipe = await context.Recipe
+            .Include(r => r.Category)
+
+            .Include(r => r.Ingredients) 
+            .FirstOrDefaultAsync(r => r.Id == this.Id);
     }
     private void SaveCustomer()
     {
@@ -140,6 +149,12 @@
         // get the id of the new recipe
         Console.WriteLine("recipe ID: " + recipe.Id);
          NavigationManager.NavigateTo("/RecipeView/"+@recipe.Id);  
+    }
+
+     private async void cancel()
+    {
+        
+        NavigationManager.NavigateTo("/RecipeView/"+this.Id);
     }
 
 
