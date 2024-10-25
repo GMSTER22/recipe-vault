@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecipeVault.Data;
 
@@ -11,9 +12,11 @@ using RecipeVault.Data;
 namespace RecipeVault.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241024234140_refactorRecipeModelAgain")]
+    partial class refactorRecipeModelAgain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -271,6 +274,32 @@ namespace RecipeVault.Data.Migrations
                     b.ToTable("Ingredient");
                 });
 
+            modelBuilder.Entity("RecipeVault.Models.Instruction", b =>
+                {
+                    b.Property<long>("InstructionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("InstructionId"));
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasMaxLength(45)
+                        .HasColumnType("nvarchar(45)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<long>("RecipeId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("InstructionId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("Instruction");
+                });
+
             modelBuilder.Entity("RecipeVault.Models.Recipe", b =>
                 {
                     b.Property<long>("Id")
@@ -289,11 +318,6 @@ namespace RecipeVault.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Instructions")
-                        .IsRequired()
-                        .HasMaxLength(32768)
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
@@ -375,6 +399,17 @@ namespace RecipeVault.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RecipeVault.Models.Instruction", b =>
+                {
+                    b.HasOne("RecipeVault.Models.Recipe", "Recipe")
+                        .WithMany("Instructions")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+                });
+
             modelBuilder.Entity("RecipeVault.Models.Recipe", b =>
                 {
                     b.HasOne("RecipeVault.Models.Category", "Category")
@@ -394,6 +429,8 @@ namespace RecipeVault.Data.Migrations
             modelBuilder.Entity("RecipeVault.Models.Recipe", b =>
                 {
                     b.Navigation("Ingredients");
+
+                    b.Navigation("Instructions");
                 });
 #pragma warning restore 612, 618
         }

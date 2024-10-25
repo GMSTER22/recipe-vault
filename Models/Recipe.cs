@@ -26,6 +26,10 @@ public class Recipe
 
     public bool IsPublic { get; set; }
 
-    public ICollection<IngredientHasRecipe> IngredientHasRecipes { get; }
-    public ICollection<Instruction> Instructions { get;  }
+    [Required, MaxLength(32768)]
+    public string Instructions { get; set; }
+
+    public ICollection<Ingredient> Ingredients { get; set;}
 }
+// dotnet ef migrations add refactorRecipeModelAgain -o ./Data/Migrations/
+// dotnet ef database update
