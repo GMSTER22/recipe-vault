@@ -30,28 +30,28 @@
 
                 <div class="form-floating mb-3">
                   <label for="username" class="p-0">Username</label> <br />
-                  <InputText @bind-Value="Input.UserName" class="form-control-sm" autocomplete="username" aria-required="true" />
+                  <InputText id="username" @bind-Value="Input.UserName" class="form-control-sm" autocomplete="username" aria-required="true" />
 
                   <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
 
                 <div class="form-floating mb-3">
                   <label for="email" class="p-0">Email</label> <br />
-                  <InputText @bind-Value="Input.Email" class="form-control-sm" autocomplete="username" aria-required="true" />
+                  <InputText id="email" @bind-Value="Input.Email" class="form-control-sm" autocomplete="username" aria-required="true" />
 
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
 
                 <div class="form-floating mb-3">
                     <label for="password" class="p-0">Password</label><br />
-                    <InputText type="password" @bind-Value="Input.Password" class="form-control-sm" autocomplete="new-password" aria-required="true"  />
+                    <InputText  id ="password type="password" @bind-Value="Input.Password" class="form-control-sm" autocomplete="new-password" aria-required="true"  />
 
                     <ValidationMessage For="() => Input.Password" class="text-danger" />
                 </div>
 
                 <div class="form-floating mb-3">
                     <label for="confirm-password" class="p-0">Confirm Password</label><br />
-                    <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control-sm custom-boarder" autocomplete="new-password" aria-required="true"  />
+                    <InputText id="confirm-password type="password" @bind-Value="Input.ConfirmPassword" class="form-control-sm custom-boarder" autocomplete="new-password" aria-required="true"  />
                     <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
                 </div>
 
