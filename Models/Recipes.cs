@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace RecipeVault.Models;
 
-public class Recipes
+public class Recipe
 {
     public BigInteger Id { get; set; }
 

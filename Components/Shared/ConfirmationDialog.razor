@@ -1,0 +1,20 @@
+<div class="dialog-container">
+    <div class="dialog">
+        <div class="dialog-title">
+            <h2>@Recipe.Name</h2>
+            @Recipe.Description
+        </div>
+
+        <div class="dialog-buttons">
+            <button class="btn btn-secondary mr-auto" @onclick="OnCancel">Cancel</button>
+            <button class="btn btn-success ml-auto" @onclick="OnConfirm">Confirm</button>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter] public Recipe? Recipe { get; set; }
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    public EventCallback OnCancel { get; set; }
+}
