@@ -22,7 +22,7 @@ public class Recipe
     public string UserId { get; set; }
 
     public int CategoryId { get; set; }
-    public Category Category { get; set; }
+    public Category Category { get; set;}
 
     public bool IsPublic { get; set; }
 
@@ -33,3 +33,9 @@ public class Recipe
 }
 // dotnet ef migrations add refactorRecipeModelAgain -o ./Data/Migrations/
 // dotnet ef database update
+
+/* reset database
+dotnet ef database drop -f -v
+dotnet ef migrations add Initial
+dotnet ef database update
+*/

@@ -3,7 +3,12 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.EntityFrameworkCore;
 @inject IDbContextFactory<ApplicationDbContext> dbContext
+
+@using Microsoft.AspNetCore.Identity
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> userManager
 @inject NavigationManager NavigationManager
+@using RecipeVault.Components.Account
 @using RecipeVault.Data;
 @using RecipeVault.Models;
 <h3>Add Recipe</h3>
@@ -35,7 +40,11 @@
             <InputCheckbox id="isPublic" class="form-check-input" @bind-Value="recipe.IsPublic" />
             <label class="form-check-label" for="isPublic">Is Public?</label>
     </div>
-
+    <div class="form-group">
+        <label for="Instructions">Instructions:</label>
+        <InputText id="Instructions" @bind-Value="recipe.Instructions" class="form-control" />
+        <ValidationMessage For="@(() => recipe.Instructions)" />
+    </div>
     <h4>Ingredients</h4>
     @foreach (var ingredient in recipe.Ingredients)
     {
@@ -58,12 +67,12 @@
     }
     <button type="button" class="btn btn-primary" @onclick="AddIngredients">Add Ingredients</button>
 
+
+
     <button type="button" class="btn btn-success" @onclick="save" >Save</button>
 </EditForm>
 
 @code {
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
     private Recipe recipe = new Recipe { Ingredients = new List<Ingredient>() };
     private List<Category> Categories { get; set; } = new List<Category>();
 
@@ -102,12 +111,35 @@
 
     private async void save()
     {
-
-        Console.WriteLine(recipe.Name);
-        @* using var context = dbContext.CreateDbContext();
+        
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+         using var context = dbContext.CreateDbContext();
+        Recipe recipe = new Recipe();
+        recipe.Name = this.recipe.Name;
+        recipe.Description = this.recipe.Description;
+        recipe.CategoryId = this.recipe.CategoryId;
+        if(recipe.CategoryId == 0)
+        {
+            recipe.CategoryId = Categories[0].Id;
+        }
+        recipe.Instructions = this.recipe.Instructions;
+        recipe.IsPublic = this.recipe.IsPublic;
+        recipe.UserId = userId;
+        recipe.Ingredients = new List<Ingredient>();
+        foreach (var ingredient in this.recipe.Ingredients)
+        {
+            recipe.Ingredients.Add(new Ingredient { Name = ingredient.Name, Quantity = ingredient.Quantity, Units = ingredient.Units });
+        }
+        Console.WriteLine("Category ID: " + this.recipe.CategoryId);
+      
+        
         context.Recipe.Add(recipe);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/RecipeList"); *@
+        // get the id of the new recipe
+        Console.WriteLine("recipe ID: " + recipe.Id);
+         NavigationManager.NavigateTo("/RecipeView/"+@recipe.Id);  
     }
 
 

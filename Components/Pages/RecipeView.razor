@@ -18,7 +18,7 @@
 <div>
     <h1 title="Name"> @recipe.Name</h1>
 
-    <div class=main>
+    <div class="main container">
 
         <div id=description> 
             <h2 class=section>Description</h2>
@@ -33,21 +33,19 @@
             <h2 class=section>Ingredients</h2>
             <!--Generate list of ingredients here-->
             <ul>
-                <li>{item_1}</li>
-                <li>{item_2}</li>
-                <li>{item_3</li>
-                <li>...</li>
+
+            @foreach (var ingredient in recipe.Ingredients)
+            {
+                <li>@ingredient.Quantity - @ingredient.Units : @ingredient.Name</li>
+            }
             </ul>
         </div>
         <div id=Instructions>
             <h2 class=section>Instructions</h2>
             <!--Generate list of instructions here-->
-            <ol>
-                <li>{direction_1}</li>
-                <li>{direction_2}</li>
-                <li>{direction_3</li>
-                <li>...</li>
-            </ol>
+            <p>
+                @recipe.Instructions
+            </p>
         </div>
     </div>
     <div id=editComponents>
@@ -83,7 +81,8 @@
         Categories = await context.Category.ToListAsync();
         recipe = await context.Recipe
             .Include(r => r.Category)
-            @* .Include(r => r.Ingredients) *@
+
+            .Include(r => r.Ingredients) 
             .FirstOrDefaultAsync(r => r.Id == this.Id);
         Console.WriteLine("Recipe: " + recipe.Name);
         Console.WriteLine("Category: " + recipe.Category.Name);
