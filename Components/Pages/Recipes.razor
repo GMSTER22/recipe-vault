@@ -62,7 +62,7 @@ else
         using var context = dbContext.CreateDbContext();
         recipes = await context.Recipe
             .Include(r => r.Category)
-            .Where(r => r.UserId == user.Id)
+            .Where(r => r.UserId == user.Id || r.IsPublic)
             .ToListAsync();
     }
 
