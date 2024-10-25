@@ -1,43 +1,91 @@
-@page "/RecipeView"
+@page "/RecipeView/{id:int}"
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+@inject IDbContextFactory<ApplicationDbContext> dbContext
+@inject RecipeVault.Components.Account.IdentityUserAccessor UserAccessor
+@using RecipeVault.Models
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.EntityFrameworkCore;
+@using RecipeVault.Data;
+@using RecipeVault.Models;
+
 
 <PageTitle>{recipe_name}</PageTitle>
 
+@if(recipe != null)
+{
 <div>
-    <h1>{recipe_name}</h1>
+    <h1 title="Name"> @recipe.Name</h1>
 
-    <div class=main>
+    <div class="main container">
 
-        <p id=added>Added by: {user_name}</p>
+        <div id=description> 
+            <h2 class=section>Description</h2>
+            <p>@recipe.Description</p>
+        </div>
 
         <div id=category> 
             <h2 class=section>Category</h2>
-            <p>{category}</p>
+            <p>@recipe.Category.Name</p>
         </div>
         <div id=Ingredients> 
             <h2 class=section>Ingredients</h2>
             <!--Generate list of ingredients here-->
             <ul>
-                <li>{item_1}</li>
-                <li>{item_2}</li>
-                <li>{item_3</li>
-                <li>...</li>
+
+            @foreach (var ingredient in recipe.Ingredients)
+            {
+                <li>@ingredient.Quantity - @ingredient.Units : @ingredient.Name</li>
+            }
             </ul>
         </div>
         <div id=Instructions>
             <h2 class=section>Instructions</h2>
             <!--Generate list of instructions here-->
-            <ol>
-                <li>{direction_1}</li>
-                <li>{direction_2}</li>
-                <li>{direction_3</li>
-                <li>...</li>
-            </ol>
+            <p>
+                @recipe.Instructions
+            </p>
         </div>
     </div>
     <div id=editComponents>
         <!--Edit and delete components here-->
     </div>
 </div>
+}
 
 
 
+@code {
+
+
+    [Parameter]
+    public int Id { get; set; }
+
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm]
+    private Recipe recipe { get; set; }
+
+   
+
+    private List<Category> Categories { get; set; } = new List<Category>();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {        
+        using var context = dbContext.CreateDbContext();
+        Categories = await context.Category.ToListAsync();
+        recipe = await context.Recipe
+            .Include(r => r.Category)
+
+            .Include(r => r.Ingredients) 
+            .FirstOrDefaultAsync(r => r.Id == this.Id);
+        Console.WriteLine("Recipe: " + recipe.Name);
+        Console.WriteLine("Category: " + recipe.Category.Name);
+    }
+
+}

@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecipeVault.Data;
 
 #nullable disable
 
-namespace RecipeVault.Data.Migrations
+namespace RecipeVault.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241025032821_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,79 +243,35 @@ namespace RecipeVault.Data.Migrations
 
             modelBuilder.Entity("RecipeVault.Models.Ingredient", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IngredientId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IngredientId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Quantity")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.Property<long>("RecipeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Units")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.HasKey("IngredientId");
+
+                    b.HasIndex("RecipeId");
 
                     b.ToTable("Ingredient");
-                });
-
-            modelBuilder.Entity("RecipeVault.Models.IngredientHasRecipe", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Amount")
-                        .IsRequired()
-                        .HasMaxLength(45)
-                        .HasColumnType("nvarchar(45)");
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("int");
-
-                    b.Property<long>("RecipeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("UnitId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IngredientId");
-
-                    b.HasIndex("RecipeId");
-
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("IngredientHasRecipe");
-                });
-
-            modelBuilder.Entity("RecipeVault.Models.Instruction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Details")
-                        .IsRequired()
-                        .HasMaxLength(45)
-                        .HasColumnType("nvarchar(45)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<long>("RecipeId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecipeId");
-
-                    b.ToTable("Instruction");
                 });
 
             modelBuilder.Entity("RecipeVault.Models.Recipe", b =>
@@ -334,6 +293,11 @@ namespace RecipeVault.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("Instructions")
+                        .IsRequired()
+                        .HasMaxLength(32768)
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
 
@@ -352,24 +316,6 @@ namespace RecipeVault.Data.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Recipe");
-                });
-
-            modelBuilder.Entity("RecipeVault.Models.Unit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Unit");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -423,42 +369,13 @@ namespace RecipeVault.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RecipeVault.Models.IngredientHasRecipe", b =>
+            modelBuilder.Entity("RecipeVault.Models.Ingredient", b =>
                 {
-                    b.HasOne("RecipeVault.Models.Ingredient", "Ingredient")
-                        .WithMany("IngredientHasRecipes")
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RecipeVault.Models.Recipe", "Recipe")
-                        .WithMany("IngredientHasRecipes")
+                    b.HasOne("RecipeVault.Models.Recipe", null)
+                        .WithMany("Ingredients")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("RecipeVault.Models.Unit", "Unit")
-                        .WithMany("IngredientHasRecipes")
-                        .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ingredient");
-
-                    b.Navigation("Recipe");
-
-                    b.Navigation("Unit");
-                });
-
-            modelBuilder.Entity("RecipeVault.Models.Instruction", b =>
-                {
-                    b.HasOne("RecipeVault.Models.Recipe", "Recipe")
-                        .WithMany("Instructions")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Recipe");
                 });
 
             modelBuilder.Entity("RecipeVault.Models.Recipe", b =>
@@ -477,21 +394,9 @@ namespace RecipeVault.Data.Migrations
                     b.Navigation("Recipes");
                 });
 
-            modelBuilder.Entity("RecipeVault.Models.Ingredient", b =>
-                {
-                    b.Navigation("IngredientHasRecipes");
-                });
-
             modelBuilder.Entity("RecipeVault.Models.Recipe", b =>
                 {
-                    b.Navigation("IngredientHasRecipes");
-
-                    b.Navigation("Instructions");
-                });
-
-            modelBuilder.Entity("RecipeVault.Models.Unit", b =>
-                {
-                    b.Navigation("IngredientHasRecipes");
+                    b.Navigation("Ingredients");
                 });
 #pragma warning restore 612, 618
         }

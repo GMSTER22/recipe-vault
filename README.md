@@ -1,17 +1,8 @@
-# Recipe Vault
-
-## Development Team
-
-Gael Nongnogo <br>
-Alex Nielsen <br>
-Johnny Sanabria <br>
-Linden Jensen <br>
-Eli LeBlanc <br>
-Anthon Brown <br>
-Aaron Webster
-
-## Commands
-
-### Used to initialize project
-
-`dotnet new blazor -o . -n RecipeVault -au Individual`
+Adrea Ferreira
+Gael Nongnogo
+Alex Nielsen
+Johnny Sanabria
+Linden Jensen
+Eli LeBlanc
+Anthon Brown
+and Aaron Webster

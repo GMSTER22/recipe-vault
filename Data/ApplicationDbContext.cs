@@ -19,9 +19,6 @@ namespace RecipeVault.Data
         public DbSet<Recipe> Recipe { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Ingredient> Ingredient { get; set; }
-        public DbSet<Instruction> Instruction { get; set; }
-        public DbSet<IngredientHasRecipe> IngredientHasRecipe { get; set; }
-        public DbSet<Unit> Unit { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
