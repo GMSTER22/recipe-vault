@@ -70,17 +70,16 @@ input.form-control-sm {
 
 .nav-pills .nav-link.active {
   background-color: var(--orange);
-  color: black;
-
+ 
 }
 
 .nav-link {
-  color:black;
+  color:var(--orange);
   font-family: var(--roboto);
 }
 
 .nav-link:hover {
-  color: var(--orange);
+  color: black;
 }
 
 

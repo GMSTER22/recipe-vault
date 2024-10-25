@@ -22,10 +22,20 @@ public class Recipe
     public string UserId { get; set; }
 
     public int CategoryId { get; set; }
-    public Category Category { get; set; }
+    public Category Category { get; set;}
 
     public bool IsPublic { get; set; }
 
-    public ICollection<IngredientHasRecipe> IngredientHasRecipes { get; }
-    public ICollection<Instruction> Instructions { get;  }
+    [Required, MaxLength(32768)]
+    public string Instructions { get; set; }
+
+    public ICollection<Ingredient> Ingredients { get; set;}
 }
+// dotnet ef migrations add refactorRecipeModelAgain -o ./Data/Migrations/
+// dotnet ef database update
+
+/* reset database
+dotnet ef database drop -f -v
+dotnet ef migrations add Initial
+dotnet ef database update
+*/

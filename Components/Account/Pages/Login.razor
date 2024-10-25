@@ -1,4 +1,4 @@
-﻿@page "/Account/Login"
+@page "/Account/Login"
 
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authentication
@@ -25,14 +25,14 @@
                 <ValidationSummary class="text-danger" role="alert" />
                 <div class="form-floating mb-4">
 
-                    <InputText id="email"  @bind-Value="Input.Email" class="form-control-sm form-input" autocomplete="username" aria-required="true"  />
-          <label for="email" class="form-label p-0">Email</label>
+                    <label for="email" class="form-label p-0">Email</label>
+                    <InputText @bind-Value="Input.Email" class="form-control-sm form-input" autocomplete="username" aria-required="true"  />
                 
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
                 <div class="form-floating mb-2">
                 <label for="password" class="form-label p-0">Password</label>
-                    <InputText type="password" id="password" @bind-Value="Input.Password" class="form-control-sm" autocomplete="current-password" aria-required="true"  />
+                    <InputText type="password" @bind-Value="Input.Password" class="form-control-sm" autocomplete="current-password" aria-required="true"  />
                    
                     <ValidationMessage For="() => Input.Password" class="text-danger" />
                 </div>
