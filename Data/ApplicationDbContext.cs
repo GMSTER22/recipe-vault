@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RecipeVault.Model.Mapper;
 using Microsoft.Extensions.Configuration;
+using RecipeVault.Models;
 
 namespace RecipeVault.Data
 {
@@ -15,7 +16,9 @@ namespace RecipeVault.Data
             _configuration = configuration;
         }
 
-        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<Recipe> Recipe { get; set; }
+        public DbSet<Category> Category { get; set; }
+        public DbSet<Ingredient> Ingredient { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

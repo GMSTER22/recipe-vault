@@ -1,0 +1,108 @@
+@page "/RecipeDelete/{id:int}"
+@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.EntityFrameworkCore;
+@inject IDbContextFactory<ApplicationDbContext> dbContext
+
+@using Microsoft.AspNetCore.Identity
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> userManager
+@inject NavigationManager NavigationManager
+@using RecipeVault.Components.Account
+@using RecipeVault.Data;
+@using RecipeVault.Models;
+
+<h3>Delete Recipe</h3>
+
+<PageTitle>{recipe_name}</PageTitle>
+
+@if(recipe != null)
+{
+<div>
+    <h1 title="Name"> @recipe.Name</h1>
+
+    <div class="main container">
+
+        <div id=description> 
+            <h2 class=section>Description</h2>
+            <p>@recipe.Description</p>
+        </div>
+
+        <div id=category> 
+            <h2 class=section>Category</h2>
+            <p>@recipe.Category.Name</p>
+        </div>
+        <div id=Ingredients> 
+            <h2 class=section>Ingredients</h2>
+            <!--Generate list of ingredients here-->
+            <ul>
+
+            @foreach (var ingredient in recipe.Ingredients)
+            {
+                <li>@ingredient.Quantity - @ingredient.Units : @ingredient.Name</li>
+            }
+            </ul>
+        </div>
+        <div id=Instructions>
+            <h2 class=section>Instructions</h2>
+            <!--Generate list of instructions here-->
+            <p>
+                @recipe.Instructions
+            </p>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-secondary" @onclick="cancel">Cancel</button>
+    <button type="button" class="btn btn-danger" @onclick="delete" >Delete</button>
+</div>
+}
+
+
+
+@code {
+
+
+    [Parameter]
+    public int Id { get; set; }
+
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm]
+    private Recipe recipe { get; set; }
+
+   
+
+    private List<Category> Categories { get; set; } = new List<Category>();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {        
+        using var context = dbContext.CreateDbContext();
+        Categories = await context.Category.ToListAsync();
+        recipe = await context.Recipe
+            .Include(r => r.Category)
+
+            .Include(r => r.Ingredients) 
+            .FirstOrDefaultAsync(r => r.Id == this.Id);
+        Console.WriteLine("Recipe: " + recipe.Name);
+        Console.WriteLine("Category: " + recipe.Category.Name);
+    }
+
+     private async void cancel()
+    {
+        
+        NavigationManager.NavigateTo("/RecipeView/"+this.Id);
+    }
+
+    private async void delete()
+    {
+        using var context = dbContext.CreateDbContext();
+        context.Recipe.Remove(recipe);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/Recipes");
+    }
+
+}

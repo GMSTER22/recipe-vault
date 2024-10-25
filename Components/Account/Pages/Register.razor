@@ -1,4 +1,4 @@
-﻿@page "/Account/Register"
+@page "/Account/Register"
 
 @using System.ComponentModel.DataAnnotations
 @using System.Text
@@ -20,43 +20,52 @@
 
 <div class="container py-5">
 
-    <h1>Register</h1>
-
-    <div class="row">
-        <div class="col-md-4">
+    <div class="login-container">
+      <h1>Sign Up</h1>
+        <section class="form-container">
             <StatusMessage Message="@Message" />
             <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
                 <DataAnnotationsValidator />
-                <h2>Create a new account.</h2>
-                <hr />
                 <ValidationSummary class="text-danger" role="alert" />
+
                 <div class="form-floating mb-3">
-                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label for="email">Email</label>
+                  <label for="username" class="p-0">Username</label> <br />
+                  <InputText @bind-Value="Input.UserName" class="form-control-sm" autocomplete="username" aria-required="true" />
+
+                  <ValidationMessage For="() => Input.Email" class="text-danger" />
+                </div>
+
+                <div class="form-floating mb-3">
+                  <label for="email" class="p-0">Email</label> <br />
+                  <InputText @bind-Value="Input.Email" class="form-control-sm" autocomplete="username" aria-required="true" />
+
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
+
                 <div class="form-floating mb-3">
-                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                    <label for="password">Password</label>
+                    <label for="password" class="p-0">Password</label><br />
+                    <InputText type="password" @bind-Value="Input.Password" class="form-control-sm" autocomplete="new-password" aria-required="true"  />
+
                     <ValidationMessage For="() => Input.Password" class="text-danger" />
                 </div>
+
                 <div class="form-floating mb-3">
-                    <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                    <label for="confirm-password">Confirm Password</label>
+                    <label for="confirm-password" class="p-0">Confirm Password</label><br />
+                    <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control-sm custom-boarder" autocomplete="new-password" aria-required="true"  />
                     <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
                 </div>
-                <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-            </EditForm>
-        </div>
-        <div class="col-md-6 col-md-offset-2">
-            <section>
-                <h3>Use another service to register.</h3>
-                <hr />
-                <ExternalLoginPicker />
-            </section>
-        </div>
-    </div>
 
+                <div class="div-container">
+                  <button type="submit" class="w-100 btn btn-lg btn-primary">CreateAccount</button>
+                </div>
+             <div class="div-container p-3">
+                <span >Already have an account?
+                  <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Login", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Login</a>
+                </span>
+              </div>
+            </EditForm>
+        </section>
+    </div>
 </div>
 
 @code {
@@ -134,6 +143,10 @@
 
     private sealed class InputModel
     {
+        [Required]
+        [Display(Name = "UserName")]
+        public string UserName { get; set; } = "";
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

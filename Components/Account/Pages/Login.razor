@@ -1,4 +1,4 @@
-﻿@page "/Account/Login"
+@page "/Account/Login"
 
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authentication
@@ -23,23 +23,23 @@
                 <DataAnnotationsValidator />
 
                 <ValidationSummary class="text-danger" role="alert" />
-                <div class="form-floating mb-3">
+                <div class="form-floating mb-4">
 
-                    <label for="email" class="form-label">Email</label>
-                    <InputText @bind-Value="Input.Email" class="form-control form-input" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <label for="email" class="form-label p-0">Email</label>
+                    <InputText @bind-Value="Input.Email" class="form-control-sm form-input" autocomplete="username" aria-required="true"  />
                 
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
                 </div>
-                <div class="form-floating mb-3">
-                <label for="password" class="form-label">Password</label>
-                    <InputText type="password" @bind-Value="Input.Password" class="custom-form-control form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                <div class="form-floating mb-2">
+                <label for="password" class="form-label p-0">Password</label>
+                    <InputText type="password" @bind-Value="Input.Password" class="form-control-sm" autocomplete="current-password" aria-required="true"  />
                    
                     <ValidationMessage For="() => Input.Password" class="text-danger" />
                 </div>
-                <div class="div-container">
+                <div class="div-container mt-1">
                     <button type="submit" class="w-100 btn btn-lg btn-primary">Login</button>
                 </div>
-                <div class="div-container">
+                <div class="div-container mt-2">
 
                     <span>Don't have an account? 
                         <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Sign up</a>

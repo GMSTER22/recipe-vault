@@ -1,0 +1,73 @@
+﻿@page "/recipes"
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+@inject IDbContextFactory<ApplicationDbContext> dbContext
+@inject RecipeVault.Components.Account.IdentityUserAccessor UserAccessor
+@using RecipeVault.Models
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.EntityFrameworkCore;
+@using RecipeVault.Data;
+@using RecipeVault.Models;
+
+<PageTitle>Available Recipes</PageTitle>
+
+<div>
+    <button class="btn btn-success mb-3" OnClick=" location.href='/RecipeCreate/'" >Add New Recipe</button>
+</div>
+
+@if (recipes != null && recipes.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var recipe in recipes)
+            {
+                <tr>
+                    <td>@recipe.Name</td>
+                    <td>@recipe.Category.Name</td>
+                    <td>@recipe.Description</td>
+                    <td>
+                        <button class="btn btn-primary" OnClick=" location.href='/RecipeView/@recipe.Id' " >View</button>
+                        <button class="btn btn-secondary" OnClick=" location.href='/RecipeEdit/@recipe.Id' ">Edit</button>
+                        <button class="btn btn-danger" OnClick=" location.href='/RecipeDelete/@recipe.Id' ">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No recipes found.</p>
+}
+
+@code {
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+    private List<Recipe> recipes{get;set;}
+
+    protected override async Task OnInitializedAsync()
+    {
+       var user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        Console.WriteLine("userId: " + user.Id);
+        using var context = dbContext.CreateDbContext();
+        recipes = await context.Recipe
+            .Include(r => r.Category)
+            .Where(r => r.UserId == user.Id || r.IsPublic)
+            .ToListAsync();
+    }
+
+    private void AddNewRecipe()
+    {
+        NavigationManager.NavigateTo("/RecipeCreate");
+    }
+}
