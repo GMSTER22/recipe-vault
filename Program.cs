@@ -29,6 +29,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 //    options.UseSqlServer(connectionString));
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
