@@ -66,11 +66,8 @@ h2 {
   font-weight: bold;
 }
 
-.buttons-container {
-  display: flex;
-  column-gap: 15px;
-  max-width: fit-content;
-  margin: 0 auto;
+.save-button-container {
+  text-align: center;
 }
 
 .btn-success {
@@ -86,6 +83,7 @@ h2 {
   background-color: #0b5ed7;
   color: var(--white);
 }
+
 
 .form-bottom {
   margin-bottom: 50px;
