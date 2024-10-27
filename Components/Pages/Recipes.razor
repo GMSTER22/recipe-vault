@@ -12,42 +12,46 @@
 
 <PageTitle>Available Recipes</PageTitle>
 
-<div>
-    <button class="btn btn-success mb-3" OnClick=" location.href='/RecipeCreate/'" >Add New Recipe</button>
-</div>
+<div class="container py-5">
 
-@if (recipes != null && recipes.Any())
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <h1>Recipes</h1>
+
+    <div class="button-container">
+        <button class="link-button" OnClick="location.href='/RecipeCreate/'" >Add New Recipe</button>
+    </div>
+
+    <div class="rows">
+
+        @if (recipes != null && recipes.Any())
+        {
+
+            <div class="row row-heading">
+                <span class="category">Category</span>
+                <span class="name">Name</span>
+                <span class="actions">Actions</span>
+            </div>
+
             @foreach (var recipe in recipes)
             {
-                <tr>
-                    <td>@recipe.Name</td>
-                    <td>@recipe.Category.Name</td>
-                    <td>@recipe.Description</td>
-                    <td>
+                <div class="row row-data">
+                    <span class="category">@recipe.Category.Name</span>
+                    <span class="name">@recipe.Name</span>
+                    <div class="actions">
                         <button class="btn btn-primary" OnClick=" location.href='/RecipeView/@recipe.Id' " >View</button>
                         <button class="btn btn-secondary" OnClick=" location.href='/RecipeEdit/@recipe.Id' ">Edit</button>
                         <button class="btn btn-danger" OnClick=" location.href='/RecipeDelete/@recipe.Id' ">Delete</button>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No recipes found.</p>
-}
+        }
+        else
+        {
+            <p>No recipes found.</p>
+        }
+
+    </div>
+
+</div>
 
 @code {
 

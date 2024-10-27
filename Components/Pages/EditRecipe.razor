@@ -11,67 +11,115 @@
 @using RecipeVault.Components.Account
 @using RecipeVault.Data;
 @using RecipeVault.Models;
-<h3>Edit Recipe</h3>
 
 @if(recipe != null)
 {
-<EditForm Model="@recipe" OnValidSubmit="SaveCustomer">
-    <DataAnnotationsValidator />
 
-    <div class="form-group">
-        <label for="FirstName">Name:</label>
-        <InputText id="FirstName" @bind-Value="recipe.Name" class="form-control" />
-        <ValidationMessage For="@(() => recipe.Name)" />
+    <div class="container py-5">
+
+        <h1>Edit Recipe</h1>
+
+        <div class="main">
+
+            <EditForm Model="@recipe" OnValidSubmit="SaveCustomer">
+                <DataAnnotationsValidator />
+
+                <div class="form-top">
+
+                    <div class="form-group">
+                        <label for="FirstName">Name:</label>
+                        <InputText id="FirstName" @bind-Value="recipe.Name" class="form-control" />
+                        <ValidationMessage For="@(() => recipe.Name)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="LastName">Description:</label>
+                        <InputText id="LastName" @bind-Value="recipe.Description" class="form-control" />
+                        <ValidationMessage For="@(() => recipe.Description)" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <InputSelect id="category" class="form-select" @bind-Value="recipe.CategoryId">
+                            @foreach (var category in Categories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <InputCheckbox id="isPublic" class="form-check-input" @bind-Value="recipe.IsPublic" />
+                        <label class="form-check-label" for="isPublic">Is Public?</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Instructions">Instructions:</label>
+                        <InputText id="Instructions" @bind-Value="recipe.Instructions" class="form-control" />
+                        <ValidationMessage For="@(() => recipe.Instructions)" />
+                    </div>
+
+                </div>
+
+                <div class="form-bottom">
+
+                    <h2>Ingredients</h2>
+
+                    @foreach (var ingredient in recipe.Ingredients)
+                    {
+                        <div class="ingredients">
+
+                            <div class="removal-button">
+
+                                <button type="button" class="btn btn-danger" @onclick="() => RemoveIngredient(ingredient)">Remove Ingredient</button>
+
+                            </div>
+
+                            <div class="ingredient">
+
+                                <div class="form-group">
+                                    <label for="Ingredient">Ingredient:</label>
+                                    <InputText id="Ingredient" @bind-Value="ingredient.Name" class="form-control" />
+                                    <ValidationMessage For="@(() => ingredient.Name)" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Quantity">Quantity:</label>
+                                    <InputText id="Quantity" @bind-Value="ingredient.Quantity" class="form-control" />
+                                    <ValidationMessage For="@(() => ingredient.Quantity)" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Units">Units:</label>
+                                    <InputText id="Units" @bind-Value="ingredient.Units" class="form-control" />
+                                    <ValidationMessage For="@(() => ingredient.Units)" />
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+                    
+                    <div class="add-button">
+                        <button type="button" class="btn btn-primary" @onclick="AddIngredients">Add Ingredients</button>
+                    </div>
+
+                </div>
+                
+                <div class="buttons-container">
+
+                    <button type="button" class="btn btn-success" @onclick="save" >Save</button>
+
+                    <button type="button" class="btn btn-secondary" @onclick="cancel">Cancel</button>
+
+                </div>
+
+            </EditForm>
+
+        </div>
+
     </div>
 
-    <div class="form-group">
-        <label for="LastName">Description:</label>
-        <InputText id="LastName" @bind-Value="recipe.Description" class="form-control" />
-        <ValidationMessage For="@(() => recipe.Description)" />
-    </div>
-     <div class="mb-3">
-            <label for="category" class="form-label">Category</label>
-            <InputSelect id="category" class="form-select" @bind-Value="recipe.CategoryId">
-                @foreach (var category in Categories)
-                {
-                    <option value="@category.Id">@category.Name</option>
-                }
-            </InputSelect>
-        </div>
-     <div class="form-check mb-3">
-            <InputCheckbox id="isPublic" class="form-check-input" @bind-Value="recipe.IsPublic" />
-            <label class="form-check-label" for="isPublic">Is Public?</label>
-    </div>
-    <div class="form-group">
-        <label for="Instructions">Instructions:</label>
-        <InputText id="Instructions" @bind-Value="recipe.Instructions" class="form-control" />
-        <ValidationMessage For="@(() => recipe.Instructions)" />
-    </div>
-    <h4>Ingredients</h4>
-    @foreach (var ingredient in recipe.Ingredients)
-    {
-         <button type="button" class="btn btn-danger" @onclick="() => RemoveIngredient(ingredient)">Remove Ingredient</button>
-        <div class="form-group">
-            <label for="Ingredient">Ingredient:</label>
-            <InputText id="Ingredient" @bind-Value="ingredient.Name" class="form-control" />
-            <ValidationMessage For="@(() => ingredient.Name)" />
-        </div>
-        <div class="form-group">
-            <label for="Quantity">Quantity:</label>
-            <InputText id="Quantity" @bind-Value="ingredient.Quantity" class="form-control" />
-            <ValidationMessage For="@(() => ingredient.Quantity)" />
-        </div>
-        <div class="form-group">
-            <label for="Units">Units:</label>
-            <InputText id="Units" @bind-Value="ingredient.Units" class="form-control" />
-            <ValidationMessage For="@(() => ingredient.Units)" />
-        </div> 
-    }
-    <button type="button" class="btn btn-primary" @onclick="AddIngredients">Add Ingredients</button>
-    <br />
-    <button type="button" class="btn btn-secondary" @onclick="cancel">Cancel</button>
-    <button type="button" class="btn btn-success" @onclick="save" >Save</button>
-</EditForm>
 }
 
 @code {
