@@ -30,7 +30,7 @@
 
         <div class="main">
 
-            <EditForm Model="@recipe" OnValidSubmit="SaveCustomer">
+            <EditForm Model="@recipe" >
                 <DataAnnotationsValidator />
 
                 <div class="form-top">
@@ -137,10 +137,12 @@
 
 @code {
     [Parameter]
-    public int Id { get; set; }    private Recipe recipe {get; set;}
+    public int Id { get; set; }    
+    private Recipe recipe {get; set;}
     private List<Category> Categories { get; set; } = new List<Category>();
-    private HttpContext HttpContext { get; set; } = default!;
-    private AuthenticationStateProvider authState { get; set; } = default!; 
+    private List<Ingredient> IngredientsToDelete { get; set; } = new List<Ingredient>();
+    
+    private List<Ingredient> IngredientsToAdd { get; set; } = new List<Ingredient>();
 
     private bool isOwner = false;
 
@@ -159,30 +161,24 @@
 
              isOwner = await isRecipeOwner();   
     }
-    private void SaveCustomer()
-    {
-        // Save to where ever
-        System.Console.WriteLine(recipe.Name);
-        Console.WriteLine(recipe.Description);
-
-        foreach (var ingredient in recipe.Ingredients)
-        {
-            System.Console.WriteLine(ingredient.Name);
-            System.Console.WriteLine(ingredient.Quantity);
-            System.Console.WriteLine(ingredient.Units);
-        }
-    }
 
     private void AddIngredients()
     {
         Console.WriteLine("Adding Ingredient");
         recipe.Ingredients = recipe.Ingredients ?? new List<Ingredient>();
-        recipe.Ingredients.Add(new Ingredient());
+        Ingredient newIngredient = new Ingredient();
+
+        IngredientsToAdd.Add(newIngredient);
+        recipe.Ingredients.Add(newIngredient);
         StateHasChanged();
     }
 
     private void RemoveIngredient(Ingredient Ingredient)
     {
+        if(Ingredient.IngredientId != 0)
+        {
+            IngredientsToDelete.Add(Ingredient);
+        }
         recipe.Ingredients.Remove(Ingredient);
         StateHasChanged();
     }
@@ -199,6 +195,7 @@
 
 
         Recipe recipe = new Recipe();
+        recipe.Id = this.recipe.Id;
         recipe.Name = this.recipe.Name;
         recipe.Description = this.recipe.Description;
         recipe.CategoryId = this.recipe.CategoryId;
@@ -210,19 +207,16 @@
         recipe.IsPublic = this.recipe.IsPublic;
         //recipe.UserId = userId;
         recipe.Ingredients = new List<Ingredient>();
-        foreach (var ingredient in this.recipe.Ingredients)
+        foreach (var ingredient in IngredientsToAdd)
         {
             recipe.Ingredients.Add(new Ingredient { Name = ingredient.Name, Quantity = ingredient.Quantity, Units = ingredient.Units });
         }
         Console.WriteLine("Category ID: " + this.recipe.CategoryId);
-        Console.WriteLine("Recipe Creator ID: " + this.recipe.UserId);
-        Console.WriteLine("Logged In User ID: " + userId);
       
         
+        context.Recipe.Update(recipe);
+        context.Ingredient.RemoveRange(IngredientsToDelete);
 
-       
-
-        context.Recipe.Add(recipe);
         await context.SaveChangesAsync();
         // get the id of the new recipe
         Console.WriteLine("recipe ID: " + recipe.Id);
