@@ -162,6 +162,7 @@
             IngredientsToDelete.Add(Ingredient);
         }
         recipe.Ingredients.Remove(Ingredient);
+        IngredientsToAdd.Remove(Ingredient);
         StateHasChanged();
     }
 
