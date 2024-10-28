@@ -25,7 +25,7 @@
   justify-content: center;
   align-items: center;
   /* min-height: 600px; */
-  background-image: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url('hero.jpg');
+  background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.9)), url('hero.jpg');
   background-position: top center;
   color: white;
 
@@ -104,7 +104,10 @@ h2 {
   align-items: center;
   background-color: rgba(0, 0, 0, 0.8);
   font-size: 32px;
-  /* max-width: 100%; */
+  transition: background-color 0.3s;
+}
+.category > div:hover {
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .category > img {
