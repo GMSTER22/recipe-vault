@@ -12,49 +12,55 @@
 @using RecipeVault.Data;
 @using RecipeVault.Models;
 
-<h3>Delete Recipe</h3>
 
 <PageTitle>{recipe_name}</PageTitle>
 
+
 @if(recipe != null)
 {
-<div>
-    <h1 title="Name"> @recipe.Name</h1>
+    <div class="container py-5">
 
-    <div class="main container">
+        <h1>Delete Recipe</h1>
 
-        <div id=description> 
-            <h2 class=section>Description</h2>
-            <p>@recipe.Description</p>
+        <div class="main">
+
+            <p class="disclaimer">Are you sure you want to delete the <br> <span>"@recipe.Name"</span> recipe?</p>
+
+            <div class="description"> 
+                <h2>Description</h2>
+                <p>@recipe.Description</p>
+            </div>
+
+            <div class="category"> 
+                <h2>Category</h2>
+                <p>@recipe.Category.Name</p>
+            </div>
+            <div class="ingredients"> 
+                <h2>Ingredients</h2>
+                <!--Generate list of ingredients here-->
+                <ul>
+
+                @foreach (var ingredient in recipe.Ingredients)
+                {
+                    <li>@ingredient.Quantity - @ingredient.Units : @ingredient.Name</li>
+                }
+                </ul>
+            </div>
+            <div class="instructions">
+                <h2>Instructions</h2>
+                <!--Generate list of instructions here-->
+                <p>
+                    @recipe.Instructions
+                </p>
+            </div>
         </div>
 
-        <div id=category> 
-            <h2 class=section>Category</h2>
-            <p>@recipe.Category.Name</p>
+        <div class="buttons-container">
+            <button type="button" class="btn btn-danger" @onclick="delete" >Delete</button>
+            <button type="button" class="btn btn-secondary" @onclick="cancel">Cancel</button>
         </div>
-        <div id=Ingredients> 
-            <h2 class=section>Ingredients</h2>
-            <!--Generate list of ingredients here-->
-            <ul>
-
-            @foreach (var ingredient in recipe.Ingredients)
-            {
-                <li>@ingredient.Quantity - @ingredient.Units : @ingredient.Name</li>
-            }
-            </ul>
-        </div>
-        <div id=Instructions>
-            <h2 class=section>Instructions</h2>
-            <!--Generate list of instructions here-->
-            <p>
-                @recipe.Instructions
-            </p>
-        </div>
+        
     </div>
-
-    <button type="button" class="btn btn-secondary" @onclick="cancel">Cancel</button>
-    <button type="button" class="btn btn-danger" @onclick="delete" >Delete</button>
-</div>
 }
 
 
