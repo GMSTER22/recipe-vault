@@ -5,6 +5,7 @@
 @inject IDbContextFactory<ApplicationDbContext> dbContext
 
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> userManager
 @inject NavigationManager NavigationManager
@@ -13,10 +14,12 @@
 @using RecipeVault.Models;
 
 
+@attribute [Authorize(Roles = "User")]
+
 <PageTitle>{recipe_name}</PageTitle>
 
 
-@if(recipe != null)
+@if(recipe != null  && isOwner) 
 {
     <div class="container py-5">
 
@@ -62,6 +65,10 @@
         
     </div>
 }
+ else 
+{
+    <DeleteError /> 
+} 
 
 
 
@@ -78,7 +85,7 @@
     [SupplyParameterFromForm]
     private Recipe recipe { get; set; }
 
-   
+    private bool isOwner = false;
 
     private List<Category> Categories { get; set; } = new List<Category>();
 
@@ -95,6 +102,8 @@
             .FirstOrDefaultAsync(r => r.Id == this.Id);
         Console.WriteLine("Recipe: " + recipe.Name);
         Console.WriteLine("Category: " + recipe.Category.Name);
+
+        isOwner = await isRecipeOwner();  
     }
 
      private async void cancel()
@@ -109,6 +118,19 @@
         context.Recipe.Remove(recipe);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/Recipes");
+    }
+
+
+    private  async Task<bool> isRecipeOwner()
+    {
+        AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        // does the logged in user own the recipe?
+        Console.WriteLine("Recipe Creator ID: " + this.recipe.UserId);
+        Console.WriteLine("Logged In User ID: " + userId);
+        return  userId == recipe.UserId;
     }
 
 }

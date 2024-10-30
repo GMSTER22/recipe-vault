@@ -12,7 +12,6 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> userManager
 @inject NavigationManager NavigationManager
-@using RecipeVault.Components.Account
 @using RecipeVault.Data;
 @using RecipeVault.Models;
 @using RecipeVault.Components.Account;
@@ -205,7 +204,7 @@
         }
         recipe.Instructions = this.recipe.Instructions;
         recipe.IsPublic = this.recipe.IsPublic;
-        //recipe.UserId = userId;
+        recipe.UserId = userId;
         recipe.Ingredients = new List<Ingredient>();
         foreach (var ingredient in IngredientsToAdd)
         {
