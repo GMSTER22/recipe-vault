@@ -63,7 +63,7 @@
 
                     <div class="form-group">
                         <label for="Instructions">Instructions:</label>
-                        <InputText id="Instructions" @bind-Value="recipe.Instructions" class="form-control" />
+                        <InputTextArea id="Instructions" @bind-Value="recipe.Instructions" class="form-control" />
                         <ValidationMessage For="@(() => recipe.Instructions)" />
                     </div>
 
