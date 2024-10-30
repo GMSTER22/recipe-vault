@@ -133,31 +133,28 @@
 {
     <EditError /> 
 } 
-
 @code {
     [Parameter]
     public int Id { get; set; }    
-    private Recipe recipe {get; set;}
+    private Recipe recipe { get; set; }
     private List<Category> Categories { get; set; } = new List<Category>();
     private List<Ingredient> IngredientsToDelete { get; set; } = new List<Ingredient>();
-    
     private List<Ingredient> IngredientsToAdd { get; set; } = new List<Ingredient>();
-  private bool isOwner = false;
+    private bool isOwner = false;
 
     protected override async Task OnInitializedAsync()
     { 
-        
-
         using var context = dbContext.CreateDbContext();
+        // Load categories from the database
         Categories = await context.Category.ToListAsync();
-        Categories = await context.Category.ToListAsync();
+        // Load the recipe with its category and ingredients
         recipe = await context.Recipe
             .Include(r => r.Category)
-
             .Include(r => r.Ingredients) 
             .FirstOrDefaultAsync(r => r.Id == this.Id);     
 
-             isOwner = await isRecipeOwner();   
+        // Check if the current user is the owner of the recipe
+        isOwner = await isRecipeOwner();   
     }
 
     private void AddIngredients()
@@ -166,6 +163,7 @@
         recipe.Ingredients = recipe.Ingredients ?? new List<Ingredient>();
         Ingredient newIngredient = new Ingredient();
 
+        // Add new ingredient to the list
         IngredientsToAdd.Add(newIngredient);
         recipe.Ingredients.Add(newIngredient);
         StateHasChanged();
@@ -173,10 +171,12 @@
 
     private void RemoveIngredient(Ingredient Ingredient)
     {
-        if(Ingredient.IngredientId != 0)
+        // If the ingredient is already in the database, mark it for deletion
+        if (Ingredient.IngredientId != 0)
         {
             IngredientsToDelete.Add(Ingredient);
         }
+        // Remove ingredient from the recipe
         recipe.Ingredients.Remove(Ingredient);
         IngredientsToAdd.Remove(Ingredient);
         StateHasChanged();
@@ -184,21 +184,18 @@
 
     private async void save()
     {
-        
         AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         using var context = dbContext.CreateDbContext();
 
-        // Make sure the userID matches the recipe creator ID before a save
-
-
+        // Create a new recipe object and populate it with the form data
         Recipe recipe = new Recipe();
         recipe.Id = this.recipe.Id;
         recipe.Name = this.recipe.Name;
         recipe.Description = this.recipe.Description;
         recipe.CategoryId = this.recipe.CategoryId;
-        if(recipe.CategoryId == 0)
+        if (recipe.CategoryId == 0)
         {
             recipe.CategoryId = Categories[0].Id;
         }
@@ -212,31 +209,32 @@
         }
         Console.WriteLine("Category ID: " + this.recipe.CategoryId);
       
-        
+        // Update the recipe and remove any ingredients marked for deletion
         context.Recipe.Update(recipe);
         context.Ingredient.RemoveRange(IngredientsToDelete);
 
+        // Save changes to the database
         await context.SaveChangesAsync();
-        // get the id of the new recipe
         Console.WriteLine("recipe ID: " + recipe.Id);
-        NavigationManager.NavigateTo("/RecipeView/"+@recipe.Id);  
-
+        // Navigate to the recipe view page
+        NavigationManager.NavigateTo("/RecipeView/" + @recipe.Id);  
     }
 
-     private async void cancel()
+    private async void cancel()
     {
-        NavigationManager.NavigateTo("/RecipeView/"+this.Id);
+        // Navigate to the recipe view page without saving changes
+        NavigationManager.NavigateTo("/RecipeView/" + this.Id);
     }
 
-    private  async Task<bool> isRecipeOwner()
+    private async Task<bool> isRecipeOwner()
     {
         AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-        // does the logged in user own the recipe?
+        // Check if the logged-in user is the owner of the recipe
         Console.WriteLine("Recipe Creator ID: " + this.recipe.UserId);
         Console.WriteLine("Logged In User ID: " + userId);
-        return  userId == recipe.UserId;
+        return userId == recipe.UserId;
     }
 }

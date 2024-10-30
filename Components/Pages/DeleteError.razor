@@ -18,18 +18,25 @@
 @code {
     private string? currentUrl;
 
+    // Called when the component is initialized
     protected override void OnInitialized()
     {
+        // Get the current URL relative path
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        // Subscribe to location changes
         NavigationManager.LocationChanged += OnLocationChanged;
     }
 
+    // Event handler for location changes
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
+        // Update the current URL relative path
         currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        // Trigger a re-render
         StateHasChanged();
     }
 
+    // Dispose method to unsubscribe from location changes
     public void Dispose()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;

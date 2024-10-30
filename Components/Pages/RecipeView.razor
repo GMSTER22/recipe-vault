@@ -62,35 +62,39 @@
 }
 
 
-
 @code {
 
-
+    // Parameter to receive the recipe ID from the URL
     [Parameter]
     public int Id { get; set; }
 
-
+    // Cascading parameter to get the current HttpContext
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
+    // Recipe object to hold the data of the recipe being viewed
     [SupplyParameterFromForm]
     private Recipe recipe { get; set; }
 
-   
-
+    // List to hold the categories for the recipe
     private List<Category> Categories { get; set; } = new List<Category>();
 
-
-
+    // Method that runs when the component is initialized
     protected override async Task OnInitializedAsync()
     {        
+        // Create a new database context
         using var context = dbContext.CreateDbContext();
+        
+        // Load all categories from the database
         Categories = await context.Category.ToListAsync();
+        
+        // Load the recipe with the specified ID, including its category and ingredients
         recipe = await context.Recipe
             .Include(r => r.Category)
-
             .Include(r => r.Ingredients) 
             .FirstOrDefaultAsync(r => r.Id == this.Id);
+        
+        // Log the recipe name and category to the console
         Console.WriteLine("Recipe: " + recipe.Name);
         Console.WriteLine("Category: " + recipe.Category.Name);
     }

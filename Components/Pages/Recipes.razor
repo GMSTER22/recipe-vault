@@ -54,36 +54,43 @@
     </div>
 
 </div>
-
 @code {
 
+    // Cascading parameter to get the current HttpContext
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
-    private List<Recipe> recipes{get;set;}
 
+    // List to hold the recipes
+    private List<Recipe> recipes { get; set; }
+
+    // Method that runs when the component is initialized
     protected override async Task OnInitializedAsync()
     {
+        // Get the current user
         var user = await UserAccessor.GetUserAsync(HttpContext);
+
+        // Create a new database context
         using var context = dbContext.CreateDbContext();
             
-       if(user is null){
-        // Display public recipes only
+        if (user is null)
+        {
+            // If no user is logged in, display public recipes only
             recipes = await context.Recipe
                 .Include(r => r.Category)
-                .Where(r =>  r.IsPublic)
+                .Where(r => r.IsPublic)
                 .ToListAsync();
         }
         else 
         {
-        // Display public and logged in user private recipes
+            // If a user is logged in, display public and the user's private recipes
             recipes = await context.Recipe
                 .Include(r => r.Category)
                 .Where(r => r.UserId == user.Id || r.IsPublic)
                 .ToListAsync();
         }
-
     }
  
+    // Method to navigate to the recipe creation page
     private void AddNewRecipe()
     {
         NavigationManager.NavigateTo("/RecipeCreate");
