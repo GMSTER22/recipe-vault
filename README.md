@@ -47,6 +47,9 @@ To get started with RecipeVault, follow these steps:
     dotnet run
     ```
 
+## User Documenation
+   - https://docs.google.com/document/d/1dRN2iOwVgT-LbZYvq7rRvhYo7dCNjEvsrFScQK8_d2M/edit?usp=sharing
+
 ## License
 
 This project is licensed under the MIT License.
