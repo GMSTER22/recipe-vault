@@ -120,15 +120,19 @@
 </div>
 
 @code {
+    // Initialize a new recipe with an empty list of ingredients
     private Recipe recipe = new Recipe { Ingredients = new List<Ingredient>() };
+    // List to hold categories
     private List<Category> Categories { get; set; } = new List<Category>();
 
-
+    // Load categories when the component is initialized
     protected override async Task OnInitializedAsync()
     {        
         using var context = dbContext.CreateDbContext();
         Categories = await context.Category.ToListAsync();
     }
+
+    // Method to save the recipe (currently just prints to console)
     private void SaveCustomer()
     {
         // Save to where ever
@@ -142,6 +146,7 @@
         }
     }
 
+    // Method to add a new ingredient to the recipe
     private void AddIngredients()
     {
         Console.WriteLine("Adding Ingredient");
@@ -150,19 +155,22 @@
         StateHasChanged();
     }
 
+    // Method to remove an ingredient from the recipe
     private void RemoveIngredient(Ingredient Ingredient)
     {
         recipe.Ingredients.Remove(Ingredient);
         StateHasChanged();
     }
 
+    // Method to save the recipe to the database
     private async void save()
     {
-        
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-         using var context = dbContext.CreateDbContext();
+        using var context = dbContext.CreateDbContext();
+        
+        // Create a new recipe object and populate it with data from the form
         Recipe recipe = new Recipe();
         recipe.Name = this.recipe.Name;
         recipe.Description = this.recipe.Description;
@@ -180,14 +188,13 @@
             recipe.Ingredients.Add(new Ingredient { Name = ingredient.Name, Quantity = ingredient.Quantity, Units = ingredient.Units });
         }
         Console.WriteLine("Category ID: " + this.recipe.CategoryId);
-      
         
+        // Add the new recipe to the database and save changes
         context.Recipe.Add(recipe);
         await context.SaveChangesAsync();
-        // get the id of the new recipe
+        
+        // Navigate to the view page for the newly created recipe
         Console.WriteLine("recipe ID: " + recipe.Id);
-         NavigationManager.NavigateTo("/RecipeView/"+@recipe.Id);  
+        NavigationManager.NavigateTo("/RecipeView/"+@recipe.Id);  
     }
-
-
-} 
+}

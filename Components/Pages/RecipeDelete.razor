@@ -71,66 +71,76 @@
 } 
 
 
-
 @code {
 
-
+    // Parameter to hold the recipe ID from the URL
     [Parameter]
     public int Id { get; set; }
 
-
+    // Cascading parameter to get the current HttpContext
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
+    // Recipe object to hold the recipe details
     [SupplyParameterFromForm]
     private Recipe recipe { get; set; }
 
+    // Boolean to check if the current user is the owner of the recipe
     private bool isOwner = false;
 
+    // List to hold the categories
     private List<Category> Categories { get; set; } = new List<Category>();
 
-
-
+    // Method to initialize the component
     protected override async Task OnInitializedAsync()
     {        
         using var context = dbContext.CreateDbContext();
+        // Fetch all categories
         Categories = await context.Category.ToListAsync();
+        // Fetch the recipe details including category and ingredients
         recipe = await context.Recipe
             .Include(r => r.Category)
-
             .Include(r => r.Ingredients) 
             .FirstOrDefaultAsync(r => r.Id == this.Id);
+
+        // Log the recipe and category details
         Console.WriteLine("Recipe: " + recipe.Name);
         Console.WriteLine("Category: " + recipe.Category.Name);
 
+        // Check if the current user is the owner of the recipe
         isOwner = await isRecipeOwner();  
     }
 
-     private async void cancel()
+    // Method to handle the cancel button click
+    private async void cancel()
     {
-        
-        NavigationManager.NavigateTo("/RecipeView/"+this.Id);
+        // Navigate to the recipe view page
+        NavigationManager.NavigateTo("/RecipeView/" + this.Id);
     }
 
+    // Method to handle the delete button click
     private async void delete()
     {
         using var context = dbContext.CreateDbContext();
+        // Remove the recipe from the database
         context.Recipe.Remove(recipe);
         await context.SaveChangesAsync();
+        // Navigate to the recipes list page
         NavigationManager.NavigateTo("/Recipes");
     }
 
-
-    private  async Task<bool> isRecipeOwner()
+    // Method to check if the current user is the owner of the recipe
+    private async Task<bool> isRecipeOwner()
     {
         AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-        // does the logged in user own the recipe?
+        // Log the recipe creator ID and the logged-in user ID
         Console.WriteLine("Recipe Creator ID: " + this.recipe.UserId);
         Console.WriteLine("Logged In User ID: " + userId);
-        return  userId == recipe.UserId;
-    }
 
+        // Return true if the logged-in user is the owner of the recipe
+        return userId == recipe.UserId;
+    }
 }
