@@ -3,18 +3,27 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.EntityFrameworkCore;
 @inject IDbContextFactory<ApplicationDbContext> dbContext
+@inject RecipeVault.Components.Account.IdentityRedirectManager redirectManager
+@* @inject HttpClient HttpClient *@
 
+@inject NavigationManager Navigation
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> userManager
 @inject NavigationManager NavigationManager
 @using RecipeVault.Components.Account
 @using RecipeVault.Data;
 @using RecipeVault.Models;
+@using RecipeVault.Components.Account;
 
-@if(recipe != null)
+@attribute [Authorize(Roles = "User")]
+
+<PageTitle>Edit Recipe</PageTitle>
+
+@* User must own the recipe to edit *@
+@if(recipe != null  && isOwner) 
 {
-
     <div class="container py-5">
 
         <h1>Edit Recipe</h1>
@@ -121,6 +130,10 @@
     </div>
 
 }
+ else 
+{
+    <EditError /> 
+} 
 
 @code {
     [Parameter]
@@ -133,7 +146,9 @@
 
 
     protected override async Task OnInitializedAsync()
-    {        
+    { 
+        
+
         using var context = dbContext.CreateDbContext();
         Categories = await context.Category.ToListAsync();
         Categories = await context.Category.ToListAsync();
@@ -141,7 +156,9 @@
             .Include(r => r.Category)
 
             .Include(r => r.Ingredients) 
-            .FirstOrDefaultAsync(r => r.Id == this.Id);
+            .FirstOrDefaultAsync(r => r.Id == this.Id);     
+
+             isOwner = await isRecipeOwner();   
     }
 
     private void AddIngredients()
@@ -169,10 +186,14 @@
     private async void save()
     {
         
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-         using var context = dbContext.CreateDbContext();
+        using var context = dbContext.CreateDbContext();
+
+        // Make sure the userID matches the recipe creator ID before a save
+
+
         Recipe recipe = new Recipe();
         recipe.Id = this.recipe.Id;
         recipe.Name = this.recipe.Name;
@@ -184,7 +205,7 @@
         }
         recipe.Instructions = this.recipe.Instructions;
         recipe.IsPublic = this.recipe.IsPublic;
-        recipe.UserId = userId;
+        //recipe.UserId = userId;
         recipe.Ingredients = new List<Ingredient>();
         foreach (var ingredient in IngredientsToAdd)
         {
@@ -199,7 +220,8 @@
         await context.SaveChangesAsync();
         // get the id of the new recipe
         Console.WriteLine("recipe ID: " + recipe.Id);
-         NavigationManager.NavigateTo("/RecipeView/"+@recipe.Id);  
+        NavigationManager.NavigateTo("/RecipeView/"+@recipe.Id);  
+
     }
 
      private async void cancel()
@@ -207,5 +229,15 @@
         NavigationManager.NavigateTo("/RecipeView/"+this.Id);
     }
 
+    private  async Task<bool> isRecipeOwner()
+    {
+        AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-} 
+        // does the logged in user own the recipe?
+        Console.WriteLine("Recipe Creator ID: " + this.recipe.UserId);
+        Console.WriteLine("Logged In User ID: " + userId);
+        return  userId == recipe.UserId;
+    }
+}

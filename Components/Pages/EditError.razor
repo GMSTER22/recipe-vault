@@ -1,0 +1,36 @@
+@implements IDisposable
+
+@inject NavigationManager NavigationManager
+
+<div class="container py-5">
+    <h1>Edit Recipe</h1>
+    <h3 class="text-danger">Edit denied</h3>
+    <p class="text-danger">You do not own this recipe.</p>
+
+
+    <div class="button-container">
+        <button  class="btn btn-success" OnClick="location.href='/Recipes/'" >Back to Recipes</button>
+    </div>
+</div>
+
+
+@code {
+    private string? currentUrl;
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}
